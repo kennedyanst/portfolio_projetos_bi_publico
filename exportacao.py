@@ -19,7 +19,7 @@ from reportlab.platypus import CondPageBreak, HRFlowable, Paragraph, SimpleDocTe
 
 
 COL_DATA = "Data de Inicio"
-COLUNAS_NUMERICAS = ("Projetos Contratados", "TRL - Inicial", "TRL - Final")
+COLUNAS_NUMERICAS = ("TRL - Inicial", "TRL - Final")
 FONTE_DADOS = "dados/projetos_embrapii.csv"
 VERDE = colors.HexColor("#125C49")
 VERDE_CLARO = colors.HexColor("#EAF2EE")
