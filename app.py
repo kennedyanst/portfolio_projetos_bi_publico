@@ -27,24 +27,25 @@ if LOGO_EMBRAPII.is_file():
 st.title("Consulta de projetos")
 st.caption("Demonstração com 5.000 registros fictícios. Os downloads respeitam os filtros selecionados.")
 
-estados = sorted(set(dados["Estado de origem"]) | set(dados["Estado de destino"]))
-labels = sorted(dados["Label"].unique())
+# Os nomes dos filtros na tela não precisam ser iguais aos cabeçalhos do CSV.
+estados = sorted(set(dados["Estado da Unidade Embrapii"]) | set(dados["Estado da Empresa"]))
+labels = sorted(dados["Instituição"].unique())
 
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-    origem = st.selectbox("Estado de origem", ["Todos"] + estados)
+    origem = st.selectbox("Estado da Unidade Embrapii", ["Todos"] + estados)
 with col2:
-    destino = st.selectbox("Estado de destino", ["Todos"] + estados)
+    destino = st.selectbox("Estado da Empresa", ["Todos"] + estados)
 with col3:
     periodo = st.date_input(
-        "Período da data",
+        "Data de Contrato",
         value=(dados["Data"].min().date(), dados["Data"].max().date()),
         min_value=dados["Data"].min().date(),
         max_value=dados["Data"].max().date(),
         format="DD/MM/YYYY",
     )
 with col4:
-    labels_escolhidos = st.multiselect("Labels (5 opções)", labels)
+    labels_escolhidos = st.multiselect("Instituições", labels)
 
 if len(periodo) != 2:
     st.info("Selecione também a data final para aplicar o período.")
