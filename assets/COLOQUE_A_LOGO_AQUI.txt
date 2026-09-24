@@ -1,0 +1,3 @@
+Para mostrar a marca no aplicativo e no PDF, coloque nesta pasta um arquivo
+PNG chamado logo_embrapii.png. O caminho já está definido no início de app.py.
+Na publicação, envie também o arquivo PNG para o repositório do GitHub.
