@@ -56,7 +56,7 @@ st.metric("Projetos encontrados", f"{len(filtrado):,}".replace(",", "."))
 st.dataframe(
     filtrado,
     hide_index=True,
-    use_container_width=True,
+    width="stretch",
     height=520,
     column_config={
         "Data": st.column_config.DateColumn("Data", format="DD/MM/YYYY"),
@@ -71,16 +71,18 @@ download_excel, download_pdf = st.columns(2)
 with download_excel:
     st.download_button(
         "Extrair para Excel",
-        data=gerar_excel(filtrado),
+        data=lambda: gerar_excel(filtrado),
         file_name="projetos_filtrados.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        use_container_width=True,
+        on_click="ignore",
+        width="stretch",
     )
 with download_pdf:
     st.download_button(
         "Extrair para PDF",
-        data=gerar_pdf(filtrado, LOGO_EMBRAPII),
+        data=lambda: gerar_pdf(filtrado, LOGO_EMBRAPII),
         file_name="projetos_filtrados.pdf",
         mime="application/pdf",
-        use_container_width=True,
+        on_click="ignore",
+        width="stretch",
     )
