@@ -6,14 +6,19 @@ from reportlab.pdfgen import canvas
 import pandas as pd
 
 
+COL_ESTADO_UNIDADE = "Estado da Unidade Embrapii"
+COL_ESTADO_EMPRESA = "Estado da Empresa"
+COL_INSTITUICAO = "Instituição"
+
+
 def filtrar_dados(dados, origem, destino, periodo, labels):
     filtrado = dados.loc[dados["Data"].dt.date.between(periodo[0], periodo[1])]
     if origem != "Todos":
-        filtrado = filtrado.loc[filtrado["Estado de origem"] == origem]
+        filtrado = filtrado.loc[filtrado[COL_ESTADO_UNIDADE] == origem]
     if destino != "Todos":
-        filtrado = filtrado.loc[filtrado["Estado de destino"] == destino]
+        filtrado = filtrado.loc[filtrado[COL_ESTADO_EMPRESA] == destino]
     if labels:
-        filtrado = filtrado.loc[filtrado["Label"].isin(labels)]
+        filtrado = filtrado.loc[filtrado[COL_INSTITUICAO].isin(labels)]
     return filtrado
 
 
@@ -34,7 +39,7 @@ def gerar_pdf(dados: pd.DataFrame, logo=None) -> bytes:
     pdf = canvas.Canvas(arquivo, pagesize=landscape(A4), pageCompression=1)
     pdf.setTitle("Projetos filtrados")
     largura_pagina, altura_pagina = landscape(A4)
-    titulos = ["ID", "Projeto", "Origem", "Destino", "Data", "Label", "Valor (R$)"]
+    titulos = ["ID", "Projeto", "UF Unidade", "UF Empresa", "Data", "Instituição", "Valor (R$)"]
     larguras = [38, 218, 68, 68, 68, 120, 100]
     inicio_x = 31
 

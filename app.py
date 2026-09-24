@@ -3,7 +3,14 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
-from exportacao import filtrar_dados, gerar_excel, gerar_pdf
+from exportacao import (
+    COL_ESTADO_EMPRESA,
+    COL_ESTADO_UNIDADE,
+    COL_INSTITUICAO,
+    filtrar_dados,
+    gerar_excel,
+    gerar_pdf,
+)
 
 
 PASTA = Path(__file__).resolve().parent
@@ -14,7 +21,6 @@ ARQUIVO_DADOS = PASTA / "dados" / "projetos_ficticios.csv"
 st.set_page_config(page_title="Projetos | Consulta e exportação", layout="wide")
 
 
-@st.cache_data
 def carregar_dados():
     return pd.read_csv(ARQUIVO_DADOS, sep=";", encoding="utf-8-sig", parse_dates=["Data"])
 
@@ -27,9 +33,8 @@ if LOGO_EMBRAPII.is_file():
 st.title("Consulta de projetos")
 st.caption("Demonstração com 5.000 registros fictícios. Os downloads respeitam os filtros selecionados.")
 
-# Os nomes dos filtros na tela não precisam ser iguais aos cabeçalhos do CSV.
-estados = sorted(set(dados["Estado da Unidade Embrapii"]) | set(dados["Estado da Empresa"]))
-labels = sorted(dados["Instituição"].unique())
+estados = sorted(set(dados[COL_ESTADO_UNIDADE]) | set(dados[COL_ESTADO_EMPRESA]))
+labels = sorted(dados[COL_INSTITUICAO].unique())
 
 col1, col2, col3, col4 = st.columns(4)
 with col1:

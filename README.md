@@ -1,6 +1,6 @@
 # Consulta e exportação de projetos — Streamlit
 
-Aplicativo independente, pronto para publicar no **Streamlit Community Cloud**. Inclui uma base **inteiramente fictícia** de **5.000 linhas e 7 colunas**, dois filtros de estado, um filtro de intervalo de datas e um filtro com cinco labels. Os botões exportam **somente as linhas filtradas** para Excel e PDF.
+Aplicativo independente, pronto para publicar no **Streamlit Community Cloud**. Inclui uma base **inteiramente fictícia** de **5.000 linhas e 7 colunas**, dois filtros de estado, um filtro de intervalo de datas e um filtro com cinco opções na coluna `Instituição`. Os botões exportam **somente as linhas filtradas** para Excel e PDF.
 
 ## Arquivos
 
@@ -75,18 +75,18 @@ Se o aplicativo já está publicado com Python 3.14, basta enviar a alteração 
 Substitua `dados/projetos_ficticios.csv` por um arquivo UTF-8 com separador `;` e os mesmos sete cabeçalhos:
 
 ```text
-ID;Projeto;Estado de origem;Estado de destino;Data;Label;Valor (R$)
+ID;Projeto;Estado da Unidade Embrapii;Estado da Empresa;Data;Instituição;Valor (R$)
 ```
 
-`Data` deve estar em `AAAA-MM-DD`; `Valor (R$)` é numérico, com ponto decimal e sem separador de milhares. Para mudar nomes, colunas ou origem dos dados, ajuste `carregar_dados()` e as referências dos filtros em `app.py`. Os dados do CSV incluído são fictícios e não representam projetos reais.
+`Data` deve estar em `AAAA-MM-DD`; `Valor (R$)` é numérico, com ponto decimal e sem separador de milhares. Para mudar os cabeçalhos, ajuste as constantes de colunas em `exportacao.py`; se mudar `Data`, ajuste também `carregar_dados()` em `app.py`. O CSV é lido a cada execução para refletir alterações publicadas sem depender de um resultado em cache. Os dados incluídos são fictícios e não representam projetos reais. Os valores atuais de `Instituição` são categorias herdadas da base de exemplo, não nomes de instituições.
 
 **Este aplicativo usa filtros próprios.** Ele não lê automaticamente os segmentadores do seu `.pbix` nem consulta o modelo publicado do Power BI. Para disponibilizar dados reais e atualizados, será preciso fornecer uma origem para o aplicativo ou atualizar o CSV no GitHub.
 
 ## Conferir o resultado
 
 - Sem filtros, a tabela mostra **5.000 registros** e os dois botões exportam as mesmas 5.000 linhas.
-- Selecione um estado de origem e outro de destino; a contagem e ambos os downloads diminuem.
-- Ajuste as duas datas e selecione uma ou mais labels; os quatro filtros são aplicados juntos.
+- Selecione um estado da Unidade Embrapii e outro da Empresa; a contagem e ambos os downloads diminuem.
+- Ajuste as duas datas e selecione uma ou mais opções em `Instituições`; os quatro filtros são aplicados juntos.
 - Se nenhum registro corresponder, o Excel contém o cabeçalho e o PDF informa zero registros.
 - No Excel, a primeira linha fica congelada e as colunas têm autofiltro; no PDF, o cabeçalho se repete em cada página.
 
