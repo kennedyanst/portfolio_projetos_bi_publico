@@ -1,97 +1,25 @@
-# Consulta e exportação de projetos — Streamlit
+# Consulta e exportação de projetos Embrapii
 
-Aplicativo independente, pronto para publicar no **Streamlit Community Cloud**. Inclui uma base **inteiramente fictícia** de **5.000 linhas e 7 colunas**, dois filtros de estado, um filtro de intervalo de datas e um filtro com cinco opções na coluna `Instituição`. Os botões exportam **somente as linhas filtradas** para Excel e PDF.
+Aplicativo Streamlit para consultar os dados de `dados/projetos_embrapii.csv` e exportar os resultados filtrados para Excel ou PDF.
 
-## Arquivos
+## Dados e filtros
 
-```text
-portfolio_projetos_bi_publico/
-├── app.py                      # Página, filtros, tabela e botões
-├── exportacao.py               # Criação do Excel e do PDF
-├── dados/
-│   └── projetos_ficticios.csv  # Base fictícia incluída
-├── assets/
-│   ├── logo_embrapii.png       # Logo usada no app e no PDF
-│   └── COLOQUE_A_LOGO_AQUI.txt
-├── .streamlit/
-│   └── config.toml             # Cores básicas
-└── requirements.txt            # Dependências para o deploy
-```
+O CSV usa UTF-8, separador `;` e contém 16 colunas. As duas primeiras, `Título Público do Projeto` e `Descrição`, aparecem na tabela e nos arquivos exportados, mas não são filtros. Cada uma das outras 14 colunas tem um filtro: `Data de Inicio` usa intervalo de datas; as demais permitem selecionar um ou mais valores. Sem seleção, o filtro não restringe os resultados. As opções de cada campo acompanham os demais filtros ativos; valores já selecionados permanecem visíveis para que possam ser removidos. O botão **Limpar todos os filtros** remove as seleções e restaura o intervalo completo de datas.
 
-## Rodar no seu computador
+Os filtros disponíveis incluem status, empresa contratante, porte, UF, projetos contratados, segmento CEIS, unidade Embrapii, TRL inicial e final, níveis de área de aplicação e tecnologia habilitadora.
 
-Com Python 3.13 ou 3.14 e um terminal aberto nesta pasta (o deploy atual usa 3.14):
+O Excel preserva todas as colunas e as linhas filtradas. O PDF apresenta um bloco por projeto, com título, descrição e os outros 14 campos. No início do PDF aparecem os filtros aplicados, a quantidade de projetos, a fonte dos dados, a URL do aplicativo usada na extração e a data e hora em UTC. O rodapé repete a fonte, a data e hora e o número da página. Textos longos quebram em linhas e podem continuar na página seguinte.
 
-```bash
-python -m venv .venv
-```
-
-No PowerShell do Windows:
+## Executar localmente
 
 ```powershell
+python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
 .venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-Em macOS ou Linux:
+Em macOS ou Linux, use `.venv/bin/python` no lugar de `.venv\Scripts\python.exe`.
 
-```bash
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m streamlit run app.py
-```
+## Publicar
 
-Abra o endereço local indicado no terminal, normalmente `http://localhost:8501`.
-
-## Inserir a logo da Embrapii
-
-Coloque seu arquivo PNG nesta pasta com este nome exato:
-
-```text
-assets/logo_embrapii.png
-```
-
-O campo está no início do **app.py**:
-
-```python
-LOGO_EMBRAPII = PASTA / "assets" / "logo_embrapii.png"
-```
-
-O PNG incluído no repositório aparece no topo do aplicativo e em cada página do PDF. Se alterar o nome ou o local, atualize essa linha e inclua o novo arquivo no repositório.
-
-## Publicar no Streamlit Community Cloud
-
-1. Crie um repositório no GitHub e coloque **o conteúdo desta pasta na raiz** do repositório. Inclua `dados/projetos_ficticios.csv`, `exportacao.py`, `requirements.txt` e a logo, caso tenha adicionado uma.
-2. Acesse [share.streamlit.io](https://share.streamlit.io) e selecione **Create app**.
-3. Escolha o repositório, a branch (por exemplo, `main`) e o arquivo principal **app.py**.
-4. Em **Advanced settings**, selecione **Python 3.14** para usar a mesma versão de Python para a qual as dependências foram preparadas.
-5. Inicie o deploy e abra a URL indicada quando terminar. O Community Cloud instala os pacotes do `requirements.txt` automaticamente.
-
-Se o aplicativo já está publicado com Python 3.14, basta enviar a alteração do `requirements.txt` ao GitHub: o Community Cloud detecta a mudança nas dependências e faz um novo deploy. Não é necessário recriar o aplicativo. A versão de Python de um aplicativo já criado só pode ser alterada ao excluí-lo e publicá-lo novamente.
-
-**Os visitantes só precisam abrir a URL e clicar nos botões de download.** Excel e PDF são gerados apenas no clique; os visitantes não instalam Python nem bibliotecas.
-
-## Trocar a base de exemplo
-
-Substitua `dados/projetos_ficticios.csv` por um arquivo UTF-8 com separador `;` e os mesmos sete cabeçalhos:
-
-```text
-ID;Projeto;Estado da Unidade Embrapii;Estado da Empresa;Data;Instituição;Valor (R$)
-```
-
-`Data` deve estar em `AAAA-MM-DD`; `Valor (R$)` é numérico, com ponto decimal e sem separador de milhares. Para mudar os cabeçalhos, ajuste as constantes de colunas em `exportacao.py`; se mudar `Data`, ajuste também `carregar_dados()` em `app.py`. O CSV é lido a cada execução para refletir alterações publicadas sem depender de um resultado em cache. Os dados incluídos são fictícios e não representam projetos reais. Os valores atuais de `Instituição` são categorias herdadas da base de exemplo, não nomes de instituições.
-
-**Este aplicativo usa filtros próprios.** Ele não lê automaticamente os segmentadores do seu `.pbix` nem consulta o modelo publicado do Power BI. Para disponibilizar dados reais e atualizados, será preciso fornecer uma origem para o aplicativo ou atualizar o CSV no GitHub.
-
-## Conferir o resultado
-
-- Sem filtros, a tabela mostra **5.000 registros** e os dois botões exportam as mesmas 5.000 linhas.
-- Selecione um estado da Unidade Embrapii e outro da Empresa; a contagem e ambos os downloads diminuem.
-- Ajuste as duas datas e selecione uma ou mais opções em `Instituições`; os quatro filtros são aplicados juntos.
-- Se nenhum registro corresponder, o Excel contém o cabeçalho e o PDF informa zero registros.
-- No Excel, a primeira linha fica congelada e as colunas têm autofiltro; no PDF, o cabeçalho se repete em cada página.
-
-Com todas as 5.000 linhas, o PDF da base demonstrativa tem aproximadamente **167 páginas**. A filtragem ajuda a produzir arquivos menores.
-
-**Verificação local:** com Python 3.13 e pandas 2.3.3, o aplicativo abriu sem erro e sem gerar os arquivos antes do clique; o Excel foi reaberto com 5.000 registros e o PDF gerado foi validado. A resolução das dependências para Linux com Python 3.14 também foi conferida sem instalar pacotes. O deploy no Community Cloud deve ser conferido após o commit.
-
-As orientações de publicação seguem a [documentação oficial do Streamlit](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy). A lista de bibliotecas está em `requirements.txt`, conforme as [instruções para dependências](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies).
+Publique `app.py` no Streamlit Community Cloud com `requirements.txt`, `exportacao.py`, `dados/projetos_embrapii.csv` e, se desejar, `assets/logo_embrapii.png`. O aplicativo lê o CSV incluído no repositório; ele não consulta a API FastAPI. Antes de publicar, confirme que a versão do CSV no repositório pode ser disponibilizada aos usuários do aplicativo.
